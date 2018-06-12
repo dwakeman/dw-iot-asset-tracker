@@ -110,6 +110,7 @@ asset Contract identified by contractId {
   --> Importer importer
   o DateTime arrivalDateTime
   o Double unitPrice
+  o Double maxAccel  //This is missing in the original github repo
   o Double minTemperature
   o Double maxTemperature
   o Double minPenaltyFactor
