@@ -32,7 +32,10 @@ enum ShipmentStatus {
  * Directions of the compass
  */
 enum CompassDirection {
-
+  o N
+  o S
+  o E
+  o W
 }
 
 /**
@@ -52,7 +55,12 @@ abstract transaction ShipmentTransaction {
  * not sufficient.
  */
 transaction AccelReading extends ShipmentTransaction {
-
+  o Double accel_x
+  o Double accel_y
+  o Double accel_z
+  o String latitude
+  o String longitude
+  o String readingTime
 }
 
 /**
@@ -65,7 +73,10 @@ transaction AccelReading extends ShipmentTransaction {
  * not sufficient.
  */
 transaction TemperatureReading extends ShipmentTransaction {
-
+  o Double celsius
+  o String latitude
+  o String longitude
+  o String readingTime
 }
 
 /**
@@ -73,7 +84,12 @@ transaction TemperatureReading extends ShipmentTransaction {
  * within a shipping container
  */
 transaction GpsReading extends ShipmentTransaction {
-
+  o String readingTime
+  o String readingDate
+  o String latitude
+  o CompassDirection latitudeDir
+  o String longitude
+  o CompassDirection longitudeDir
 }
 
 /**
@@ -94,7 +110,9 @@ asset Shipment identified by shipmentId {
   o ShipmentStatus status
   o Long unitCount
   --> Contract contract
-
+  o TemperatureReading[] temperatureReadings optional
+  o AccelReading[] AccelReadings optional
+  o GpsReading[] gpsReadings optional
 }
 
 /**
@@ -110,11 +128,11 @@ asset Contract identified by contractId {
   --> Importer importer
   o DateTime arrivalDateTime
   o Double unitPrice
-  o Double maxAccel  //This is missing in the original github repo
   o Double minTemperature
   o Double maxTemperature
   o Double minPenaltyFactor
   o Double maxPenaltyFactor
+  o Double maxAccel
 }
 
 /**
@@ -164,19 +182,32 @@ transaction SetupDemo {
  * An event - when the temperature goes outside the agreed-upon boundaries
  */
 event TemperatureThresholdEvent {
-
+  o String message
+  o Double temperature
+  o String latitude
+  o String longitude
+  o String readingTime
+  --> Shipment shipment
 }
 
 /**
  * An event - when the acceleration event has been detected
  */
 event AccelerationThresholdEvent {
-
+  o String message
+  o Double accel_x
+  o Double accel_y
+  o Double accel_z
+  o String latitude
+  o String longitude
+  o String readingTime
+  --> Shipment shipment
 }
 
 /**
  * An event - when the ship arrives at the port
  */
 event ShipmentInPortEvent {
-
+  o String message
+  --> Shipment shipment
 }
